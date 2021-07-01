@@ -1,43 +1,48 @@
 Памятка
 
 #Типы
-	NULL - логично
+	NULL - пустое значение
 	INNTEGER(INT) - целое число
 	REAL - вещественное число
 	TEXT - строка
 
-#Удалить в соответствии с фильтром/удалить все(без VALUES%)
-	cursor.execute("DELETE FROM Test WHERE rowid == 1")
+#Приминить изменения
 	connection.commit()
+
+#Удалить в соответствии с условием/удалить все(без VALUES%)
+	cursor.execute("DELETE FROM name WHERE <условие>")	
 
 #Вставить значение
 	cursor.execute("INSERT INTO name(column_name1, column_name2,...) VALUES (value1, value2,...)")
 	or
 	cursor.execute("INSERT INTO name VALUES (записывается по порядку)(value1, value2,...)")
-	connection.commit()
 
-#Вывести в соответствии с выбранным
+#Вывести в соответствии с условием
 	cursor.execute("SELECT <поля через запятую> FROM name WHERE <условие>")  (условия: ==, >, <, >=, <=, !=, BETWEEN(В интервале от x AND до y)) (для составного AND, OR, NOT, IN(Входит в множество и перечисление), NOT IN(Не входит в множество и перечисление))
 	or
 	cursor.execute("SELECT * FROM name") - выбрать все
 
 	+ORDER BY name (+ASC - сортировка от большего к меньшему(дефолт)) (+DESC - наоборот)
 	+LIMIT - кол-во выводимых записей or LIMIT n, m - n - смещение, m - лимит
-	print(cursor.fetchall())
+	print(cursor.fetchall()) - вывод всех записей в строку
+	print(cursor.fetchone()) - вывод одной записи
+	print(cursor.fetchmany(n)) - вывод n записей
+
+#Обновление данных
+	cursor.execute("UPDATE name SET <имя_столбца> = <новое_значение>, ... WHERE <условие>(name LIKE '...' - для строки, в значение можно вставить % - любое продолжение строки или _ - любой символ строки)") если пистаь без WHERE, то примениться ко всем
 
 #Создание таблицы
-	cursor.execute("""CREATE TABLE IF NOT EXISTS Test(
-		name TEXT,
-		age INT,
-		day INT
+	cursor.execute("""CREATE TABLE IF NOT EXISTS name(
+		st1 TEXT,
+		st2 INT
 		)""")
 	connection.close()
-
-#Удаление таблицы
-	cursor.execute("DROP TABLE IF EXISTS name") 
 
 #Параметры для таблицы
 	CREATE TABLE IF NOT EXISTS name - создать если не существует
 	name type NOT NULL
 	name type DEFAULT n
 	name INT PRIMARY KEY AUTOINCREMENT(Чтоб значение увеличивалось на +1, но оно и само так делает) (если не узказывать то будет rowid)
+
+#Удаление таблицы
+	cursor.execute("DROP TABLE IF EXISTS name") 
