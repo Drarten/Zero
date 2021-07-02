@@ -10,39 +10,65 @@
 	connection.commit()
 
 #Удалить в соответствии с условием/удалить все(без VALUES%)
-	cursor.execute("DELETE FROM name WHERE <условие>")	
+	cursor.execute("DELETE FROM <name> WHERE <условие>")	
 
 #Вставить значение
-	cursor.execute("INSERT INTO name(column_name1, column_name2,...) VALUES (value1, value2,...)")
+	cursor.execute("INSERT INTO <name>(column_name1, column_name2,...) VALUES (value1, value2,...)")
 	or
-	cursor.execute("INSERT INTO name VALUES (записывается по порядку)(value1, value2,...)")
+	cursor.execute("INSERT INTO <name> VALUES (записывается по порядку)(value1, value2,...)")
 
 #Вывести в соответствии с условием
-	cursor.execute("SELECT <поля через запятую> FROM name WHERE <условие>")  (условия: ==, >, <, >=, <=, !=, BETWEEN(В интервале от x AND до y)) (для составного AND, OR, NOT, IN(Входит в множество и перечисление), NOT IN(Не входит в множество и перечисление))
+	cursor.execute("SELECT <поля через запятую> FROM <name> WHERE <условие>")  (условия: ==, >, <, >=, <=, !=, BETWEEN(В интервале от x AND до y)) (для составного AND, OR, NOT, IN(Входит в множество и перечисление), NOT IN(Не входит в множество и перечисление))
 	or
-	cursor.execute("SELECT * FROM name") - выбрать все
+	cursor.execute("SELECT * FROM <name>") - выбрать все
 
-	+ORDER BY name (+ASC - сортировка от большего к меньшему(дефолт)) (+DESC - наоборот)
+	+ORDER BY <name> (+ASC - сортировка от большего к меньшему(дефолт)) (+DESC - наоборот)
 	+LIMIT - кол-во выводимых записей or LIMIT n, m - n - смещение, m - лимит
 	print(cursor.fetchall()) - вывод всех записей в строку
 	print(cursor.fetchone()) - вывод одной записи
 	print(cursor.fetchmany(n)) - вывод n записей
 
 #Обновление данных
-	cursor.execute("UPDATE name SET <имя_столбца> = <новое_значение>, ... WHERE <условие>(name LIKE '...' - для строки, в значение можно вставить % - любое продолжение строки или _ - любой символ строки)") если пистаь без WHERE, то примениться ко всем
+	cursor.execute("UPDATE <name> SET <имя_столбца> = <новое_значение>, ... WHERE <условие>(<name> LIKE '...' - для строки, в значение можно вставить % - любое продолжение строки или _ - любой символ строки)") если пистаь без WHERE, то примениться ко всем
 
 #Создание таблицы
-	cursor.execute("""CREATE TABLE IF NOT EXISTS name(
+	cursor.execute("""CREATE TABLE IF NOT EXISTS <name>(
 		st1 TEXT,
 		st2 INT
 		)""")
 	connection.close()
 
 #Параметры для таблицы
-	CREATE TABLE IF NOT EXISTS name - создать если не существует
-	name type NOT NULL
-	name type DEFAULT n
-	name INT PRIMARY KEY AUTOINCREMENT(Чтоб значение увеличивалось на +1, но оно и само так делает) (если не узказывать то будет rowid)
+	CREATE TABLE IF NOT EXISTS <name> - создать если не существует
+	<name> type NOT NULL
+	<name> type DEFAULT n
+	<name> INT PRIMARY KEY AUTOINCREMENT(Чтоб значение увеличивалось на +1, но оно и само так делает) (если не узказывать то будет rowid)
 
 #Удаление таблицы
-	cursor.execute("DROP TABLE IF EXISTS name") 
+	cursor.execute("DROP TABLE IF EXISTS <name>") 
+
+#Агрегирование
+	cursor.execute("SELECT функция(поле) |as <name> - наименование столбца будет записано как <name>| FROM <name> WHERE <условие>") - подсчет кол-во строк в таблице удовлетворяющих условуию
+	функции:
+	count() - подсчет числа записей 
+	sum() - подсчет суммы указанного поля по всемзаписям выборки
+	avr() - вычисление среднего арифметического указанного поля
+	min() - нахождение минимального значения для указанного поля
+	max() - нахождение максимального значения для указанного поля
+	DISTINCT для подсчетка уникальных записей полей(WHERE убирается)(можно джобавлять в функции выше)
+
+#Группировка
+	GROUP BY <поле> (+DESC сортировка по убыванию) (+LIMIT n ограничение до n записей)
+	пример:
+	cursor.execute("SELECT <поле1> , sum(поле2) FROM <name> GROUP BY <поле1>)")
+
+#Объединение данных для формирования сводного отчета через JOIN
+	JOIN <name> (при необходимости JOIN <name 2> ... JOIN <name N>) ON <условия свзывания>
+	прмиер: (так как в txt файл нельзя вставить картинки, то они в папке Pictures под соответствующими названиями)
+	исходные данные таблицы games(1), таблицы users(2)
+	SELECT name,sex,games.score(через точку указываются поля имя которых имеется в разных таблицах) FROM games
+	JOIN users ON user_id = users.rowid
+	результат(3)(если соответствия между id1 и id2 не будет найдено, то оно просто не выведеться (если преед JOIN добавить LEFT, то стргока будет выведена, но часть данных(или все) будут NULL))(7 строка не влезла), пример использования иначе(4), просто пример(5)
+
+#Объединение данных через UNION
+	
