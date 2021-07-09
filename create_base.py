@@ -4,19 +4,19 @@ import sqlite3 as sq
 connection = sq.connect('base.db')
 cursor = connection.cursor()
 
-cursor.execute("""CREATE TABLE IF NOT EXISTS games(
-	user_id INT,
-	score INT,
-	'time' INT
-	)""")
+class Aut:
+	cursor.execute("""CREATE TABLE IF NOT EXISTS authorize(
+		id INT,
+		user_name TEXT,
+		token TEXT
+		)""")
 
-cursor.execute("""CREATE TABLE IF NOT EXISTS users(
-	rowid INT PRIMARY KEY,
-	name TEXT,
-	sex INT,
-	old INT,
-	score INT
-	)""")
-
+class Con:
+	cursor.execute("""CREATE TABLE IF NOT EXISTS content(
+		id INT,
+		title TEXT,
+		content TEXT
+		)""")
 
 connection.close()
+#В стандартном дистрибутиве SQLite невозможно установить пароль для базы данных SQLite.
